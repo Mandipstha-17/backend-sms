@@ -6,35 +6,31 @@ import authRoutes from "./routes/authRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 
 dotenv.config();
-
-// Connect DB
 connectDB();
 
 const app = express();
 
-// Enhanced CORS configuration
+// CORS configuration
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      "http://localhost:5173", // Local development
-      "https://student-frontend-kappa.vercel.app" // Your frontend deployed URL
+      "http://localhost:5173",  // Your frontend URL for local development
+      "https://student-frontend-kappa.vercel.app"  // Production URL
     ];
-
-    // Allow requests with no origin (e.g., mobile apps or curl requests)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // Allow credentials (cookies, session, etc.)
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow necessary methods
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], // Allow necessary headers
-  exposedHeaders: ["Authorization"], // Expose the Authorization header for client access
-  maxAge: 86400 // Cache preflight response for 24 hours
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["Authorization"],
+  maxAge: 86400 // Cache for 24 hours
 };
 
-// Apply CORS with options
+// Apply CORS middleware globally
 app.use(cors(corsOptions));
 
 // Handle preflight requests (OPTIONS)
@@ -53,23 +49,20 @@ app.get("/", (req, res) => {
   res.json({ status: "healthy", message: "Server is running" });
 });
 
-// 404 handler (for unknown routes)
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: "Endpoint not found" });
 });
 
-// General error handler
+// Error handler
 app.use((err, req, res, next) => {
   console.error("Server Error:", err.stack || err);
-  
-  // Handle CORS errors specifically
+
   if (err.message === "Not allowed by CORS") {
     return res.status(403).json({ message: "Cross-origin requests not allowed" });
   }
 
-  // Default error handler
   res.status(500).json({ message: "Internal server error" });
 });
 
-// Export app for deployment (e.g., Vercel, Heroku)
 export default app;
