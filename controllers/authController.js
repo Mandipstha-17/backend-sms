@@ -59,13 +59,14 @@ export const register = async (req, res) => {
 // @access  Public
 export const login = async (req, res) => {
   try {
+    console.log(req.body);
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
-        message: "Invalid credentials"
+        message: "User does not exist, please register first."
       });
     }
 
@@ -73,12 +74,12 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Password did not match"
       });
     }
 
     const token = generateToken(user._id);
-
+    console.log(user,token);    
     res.status(200).json({
       success: true,
       token,

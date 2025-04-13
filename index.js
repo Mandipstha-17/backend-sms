@@ -10,12 +10,12 @@ connectDB();
 
 const app = express();
 
-// CORS configuration
+
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      "http://localhost:5173",  // Your frontend URL for local development
-      "https://student-frontend-kappa.vercel.app"  // Production URL
+      "http://localhost:5173",  
+      "https://student-frontend-kappa.vercel.app"  
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -27,16 +27,14 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   exposedHeaders: ["Authorization"],
-  maxAge: 86400 // Cache for 24 hours
+  maxAge: 86400 
 };
 
-// Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-// Handle preflight requests (OPTIONS)
 app.options("*", cors(corsOptions));
 
-// Body parsers
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
@@ -64,5 +62,7 @@ app.use((err, req, res, next) => {
 
   res.status(500).json({ message: "Internal server error" });
 });
-
+// app.listen( 3000, () => {
+//   console.log(`Server running on http://localhost:${3000}`);
+// });
 export default app;
