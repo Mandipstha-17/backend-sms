@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // CORS Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://localhost:5173",
+  origin: process.env.FRONTEND_URL || "https://localhost:5173 || https://student-frontend-kappa.vercel.app/",
   credentials: true
 }));
 
