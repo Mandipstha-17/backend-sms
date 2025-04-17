@@ -3,15 +3,15 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { generateToken } from '../utils/generateToken.js';
 
-// @desc    Register user
-// @route   POST /api/auth/register
-// @access  Public
+//    Register user
 export const register = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
-
+    if([name,email,password,confirmPassword].some((item)=>item.trim()==="")){
+      throw new Error("All fields are required");
+    }
     if (password !== confirmPassword) {
-      return res.status(400).json({
+     return res.status(400).json({
         success: false,
         message: "Passwords don't match"
       });
@@ -54,9 +54,7 @@ export const register = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+//  Login user
 export const login = async (req, res) => {
   try {
     console.log(req.body);
@@ -97,6 +95,8 @@ export const login = async (req, res) => {
     });
   }
 };
+
+//reset password
 export const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
